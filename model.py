@@ -30,12 +30,12 @@ class ACModel(nn.Module, torch_ac.RecurrentACModel):
             nn.MaxPool2d((2, 2)),
             nn.Conv2d(16, 32, (2, 2)),
             nn.ReLU(),
-            nn.Conv2d(32, 64, (2, 2)),
+            nn.Conv2d(32, 64, (1, 1)),
             nn.ReLU()
         )
         n = obs_space["image"][0]
         m = obs_space["image"][1]
-        self.image_embedding_size = ((n-1)//2-2)*((m-1)//2-2)*64
+        self.image_embedding_size = ((n-1)//2-1)*((m-1)//2-1)*64
 
         # Define memory
         if self.use_memory:
