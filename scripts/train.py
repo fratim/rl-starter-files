@@ -28,8 +28,8 @@ parser.add_argument("--save-interval", type=int, default=10,
                     help="number of updates between two saves (default: 10, 0 means no saving)")
 parser.add_argument("--procs", type=int, default=1,
                     help="number of processes (default: 1)")
-parser.add_argument("--frames", type=int, default=5*10**5,
-                    help="number of frames of training (default: 5*1e5)")
+parser.add_argument("--frames", type=int, default=3*10**6,
+                    help="number of frames of training (default: 3*1e6)")
 
 ## Parameters for main algorithm
 parser.add_argument("--epochs", type=int, default=4,
