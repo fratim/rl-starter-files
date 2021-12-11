@@ -47,6 +47,17 @@ class Agent:
     def get_action(self, obs):
         return self.get_actions([obs])[0]
 
+    def get_value(self, obs):
+        preprocessed_obss = self.preprocess_obss([obs], device=device)
+
+        with torch.no_grad():
+            if self.acmodel.recurrent:
+                dist, value, self.memories = self.acmodel(preprocessed_obss, self.memories)
+            else:
+                dist, value = self.acmodel(preprocessed_obss)
+
+        return value
+
     def analyze_feedbacks(self, rewards, dones):
         if self.acmodel.recurrent:
             masks = 1 - torch.tensor(dones, dtype=torch.float, device=device).unsqueeze(1)
