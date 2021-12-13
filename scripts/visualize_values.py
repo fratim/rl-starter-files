@@ -69,4 +69,5 @@ env.render('human')
 
 for goal_x in range(env.width):
     for goal_y in range(env.height):
-        utils.save_valuemap(env, agent, (goal_x, goal_y), args.model)
+        for box_strength in range(4):
+            utils.save_valuemap(env, agent, (goal_x, goal_y), box_strength, args.model)

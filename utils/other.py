@@ -26,7 +26,7 @@ def synthesize(array):
     d["max"] = numpy.amax(array)
     return d
 
-def save_valuemap(env, agent, goal_pos, model_name):
+def save_valuemap(env, agent, goal_pos, box_strength, model_name):
 
     n_directions = 4
     values = np.ones((env.height, env.width, n_directions)) * np.nan
@@ -41,7 +41,7 @@ def save_valuemap(env, agent, goal_pos, model_name):
                 continue
 
             for agent_dir in range(n_directions):
-                env.reset(agent_pos=(x, y), agent_dir=agent_dir, goal_pos=goal_pos)
+                env.reset(agent_pos=(x, y), agent_dir=agent_dir, box_strength=box_strength, goal_pos=goal_pos)
                 env.render('human')
 
                 obs = env.gen_obs()
@@ -76,4 +76,4 @@ def save_valuemap(env, agent, goal_pos, model_name):
 
     plt.plot(goal_pos[0], goal_pos[1] - 0.3, marker="o", color="red")
     model_dir = utils.get_model_dir(model_name)
-    plt.savefig(os.path.join(model_dir, f"values_goalx{goal_pos[0]}y{goal_pos[1]}.png"))
+    plt.savefig(os.path.join(model_dir, f"values_goalx{goal_pos[0]}y{goal_pos[1]}_box{box_strength}.png"))
