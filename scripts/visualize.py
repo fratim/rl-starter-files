@@ -77,6 +77,8 @@ for episode in range(args.episodes):
         if done or env.window.closed:
             break
 
+    env.render_blank_image()
+
     if env.window.closed:
         break
 
