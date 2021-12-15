@@ -24,7 +24,7 @@ parser.add_argument("--seed", type=int, default=1,
                     help="random seed (default: 1)")
 parser.add_argument("--log-interval", type=int, default=1,
                     help="number of updates between two logs (default: 1)")
-parser.add_argument("--save-interval", type=int, default=10,
+parser.add_argument("--save-interval", type=int, default=10000,
                     help="number of updates between two saves (default: 10, 0 means no saving)")
 parser.add_argument("--procs", type=int, default=1,
                     help="number of processes (default: 1)")
