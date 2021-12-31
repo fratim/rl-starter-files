@@ -3,11 +3,8 @@ import numpy
 
 import utils
 from utils import device
-
-import numpy as np
-import matplotlib.pyplot as plt
-
-import os
+import copy
+from scipy.special import softmax
 
 
 # Parse arguments
@@ -17,8 +14,8 @@ parser.add_argument("--env", required=True,
                     help="name of the environment to be run (REQUIRED)")
 parser.add_argument("--model", required=True,
                     help="name of the trained model (REQUIRED)")
-parser.add_argument("--seed", type=int, default=0,
-                    help="random seed (default: 0)")
+parser.add_argument("--seed", type=int, default=1,
+                    help="random seed (default: 1)")
 parser.add_argument("--shift", type=int, default=0,
                     help="number of times the environment is reset at the beginning (default: 0)")
 parser.add_argument("--argmax", action="store_true", default=False,
@@ -67,32 +64,59 @@ if args.gif:
 # Create a window to view the environment
 env.render('human')
 
-pb_goals = []
-for goal_x in range(env.width):
-    for goal_y in range(env.height):
-        pb_goals.append((goal_x, goal_y))
+def get_argmax_action(env, agent):
 
-for box_strength in range(5):
+    all_actions = env.actions # this should return a list of actions (encoded as integers)
 
-    env.reset()
+    initial_configuration = copy.deepcopy(env.get_current_configuration())
+    values = numpy.ones((1, len(all_actions)))*numpy.nan
 
-    values = np.ones((env.height, env.width, len(pb_goals)))*np.nan
+    for action in all_actions:
+        _ = env.reset(configuration=initial_configuration)
+        env.step(action.value)
 
-    for goal_id, goal_pos in enumerate(pb_goals):
-        values_in = utils.get_values(env, agent, goal_pos, box_strength)
-        max_values = np.max(values_in, axis=2)
-        values[:, :, goal_id] = max_values
+        if (env.agent_pos == env.goal_pos).all():
+            next_value = 1
+        else:
+            next_obs = env.gen_obs()
+            next_value = agent.get_value(next_obs)
 
-    values_mean = np.nanmean(values, axis=2)
+        values[0, action.value] = next_value
 
-    plt.clf()
-    plt.imshow(values_mean)
-    utils.plt_show_values(env, values_mean)
+    action = numpy.random.choice(numpy.arange(0, len(all_actions)), p=softmax(30*values).T[:,0])
 
-    model_dir = utils.get_model_dir(args.model)
-    plt.savefig(os.path.join(model_dir, f"values_avg_box{box_strength}.png"))
+    _ = env.reset(configuration=initial_configuration)
 
-# for goal_x in range(env.width):
-#     for goal_y in range(env.height):
-#         for box_strength in range(5):
-#             utils.save_valuemap(env, agent, (goal_x, goal_y), box_strength, args.model)
+    return action
+
+for episode in range(args.episodes):
+    obs = env.reset()
+
+    print("new episode")
+    max_steps = 20
+
+    step = 0
+    while True:
+        env.render('human')
+        if args.gif:
+            frames.append(numpy.moveaxis(env.render("rgb_array"), 2, 0))
+
+        action = get_argmax_action(env, agent)
+        print(action)
+
+        obs, reward, done, _ = env.step(action)
+        agent.analyze_feedback(reward, done)
+
+        step += 1
+        if done or env.window.closed or step == max_steps:
+            break
+
+    env.render_blank_image()
+
+    if env.window.closed:
+        break
+
+if args.gif:
+    print("Saving gif... ", end="")
+    write_gif(numpy.array(frames), args.gif+".gif", fps=1/args.pause)
+    print("Done.")

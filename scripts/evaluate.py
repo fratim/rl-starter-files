@@ -18,8 +18,8 @@ parser.add_argument("--episodes", type=int, default=100,
                     help="number of episodes of evaluation (default: 100)")
 parser.add_argument("--seed", type=int, default=0,
                     help="random seed (default: 0)")
-parser.add_argument("--procs", type=int, default=16,
-                    help="number of processes (default: 16)")
+parser.add_argument("--procs", type=int, default=1,
+                    help="number of processes (default: 1)")
 parser.add_argument("--argmax", action="store_true", default=False,
                     help="action with highest probability is selected")
 parser.add_argument("--worst-episodes-to-show", type=int, default=10,
