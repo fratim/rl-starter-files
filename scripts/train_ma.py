@@ -93,16 +93,11 @@ utils.seed(args.seed)
 
 txt_logger.info(f"Device: {device}\n")
 
-# determine environment rewards fn
-# TODO remove this hard coded BS
-rewards_fname = "/Users/tim/Code/blocks/rl-starter-files/storage/box4/v2-s9-ppo_box4g9/mean_values.pickle" # TODO remove this
-
 # Load environments
 
 envs = []
-env_args = {"state_rewards_fn": rewards_fname}
 for i in range(args.procs):
-    envs.append(utils.make_env(args.env, env_args=env_args, seed=args.seed + 10000 * i))
+    envs.append(utils.make_env(args.env, seed=args.seed + 10000 * i))
 txt_logger.info("Environments loaded\n")
 
 # Load training status

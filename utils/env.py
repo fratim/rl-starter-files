@@ -1,5 +1,6 @@
 import gym
 import gym_minigrid
+import gym_multigrid
 
 
 def make_env(env_key, env_args=None, seed=None):
