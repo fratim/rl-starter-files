@@ -43,8 +43,8 @@ def get_values(env, agent, goal_pos, box_strength):
         for agent_y in range(env.height):
 
             # TODO remove this hack
-            if agent_x == goal_pos[0]:
-                continue
+            # if agent_x == goal_pos[0]:
+            #     continue
 
             #if env.grid.get(x, y) is not None and not env.grid.get(x, y).can_overlap():
             #    continue

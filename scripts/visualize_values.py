@@ -6,6 +6,7 @@ from utils import device
 
 import numpy as np
 import matplotlib.pyplot as plt
+import pickle
 
 import os
 
@@ -72,7 +73,11 @@ for goal_x in range(env.width):
     for goal_y in range(env.height):
         pb_goals.append((goal_x, goal_y))
 
-for box_strength in range(5):
+max_box_strength = 4
+
+mean_values = np.ones((env.height, env.width, max_box_strength+1))*np.nan
+
+for box_strength in range(max_box_strength+1):
 
     env.reset()
 
@@ -83,14 +88,19 @@ for box_strength in range(5):
         max_values = np.max(values_in, axis=2)
         values[:, :, goal_id] = max_values
 
-    values_mean = np.nanmean(values, axis=2)
+    values_mean_slice = np.nanmean(values, axis=2)
+    mean_values[:, :, box_strength] = values_mean_slice
 
     plt.clf()
-    plt.imshow(values_mean)
-    utils.plt_show_values(env, values_mean)
+    plt.imshow(values_mean_slice)
+    utils.plt_show_values(env, values_mean_slice)
 
     model_dir = utils.get_model_dir(args.model)
     plt.savefig(os.path.join(model_dir, f"values_avg_box{box_strength}.png"))
+
+output_fname = os.path.join(model_dir, "mean_values.pickle")
+with open(output_fname, "wb") as output_file:
+    pickle.dump(mean_values, output_file)
 
 # for goal_x in range(env.width):
 #     for goal_y in range(env.height):

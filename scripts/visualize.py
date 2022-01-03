@@ -41,13 +41,18 @@ print(f"Device: {device}\n")
 
 # Load environment
 
-env = utils.make_env(args.env, args.seed)
+# determine environment rewards fn
+rewards_fname = "/Users/tim/Code/blocks/rl-starter-files/storage/box4/v2-s9-ppo_box4g9/mean_values.pickle" # TODO remove this
+
+# Load environments
+env_args = {"state_rewards_fn": rewards_fname}
+
+env = utils.make_env(args.env, seed=args.seed, env_args=env_args)
 for _ in range(args.shift):
     env.reset()
 print("Environment loaded\n")
 
 # Load agent
-
 model_dir = utils.get_model_dir(args.model)
 agent = utils.Agent(env.observation_space, env.action_space, model_dir,
                     argmax=args.argmax, use_memory=args.memory, use_text=args.text)
