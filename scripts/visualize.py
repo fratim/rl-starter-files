@@ -45,7 +45,7 @@ print(f"Device: {device}\n")
 rewards_fname = "/Users/tim/Code/blocks/rl-starter-files/storage/box4/v2-s9-ppo_box4g9/mean_values.pickle" # TODO remove this
 
 # Load environments
-env_args = {"state_rewards_fn": rewards_fname}
+env_args = {}
 
 env = utils.make_env(args.env, seed=args.seed, env_args=env_args)
 for _ in range(args.shift):
