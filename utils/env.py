@@ -1,5 +1,4 @@
 import gym
-import gym_minigrid
 import gym_multigrid
 
 
