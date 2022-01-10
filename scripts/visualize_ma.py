@@ -3,7 +3,9 @@ import numpy
 
 import utils
 from utils import device
+import gym
 
+import time
 
 # Parse arguments
 
@@ -12,7 +14,7 @@ parser.add_argument("--env", required=True,
                     help="name of the environment to be run (REQUIRED)")
 parser.add_argument("--model", required=True,
                     help="name of the trained model (REQUIRED)")
-parser.add_argument("--seed", type=int, default=0,
+parser.add_argument("--seed", type=int, default=10,
                     help="random seed (default: 0)")
 parser.add_argument("--shift", type=int, default=0,
                     help="number of times the environment is reset at the beginning (default: 0)")
@@ -46,10 +48,14 @@ for _ in range(args.shift):
 print("Environment loaded\n")
 
 # Load agent
+action_space_org = gym.spaces.discrete
+action_space_org.n = 5
+#
 model_dir = utils.get_model_dir(args.model)
-# agent = utils.Agent(env.observation_space, env.action_space, model_dir,
-#                     argmax=args.argmax, use_memory=args.memory, use_text=args.text)
-print("Agent loaded\n")
+agent_l = utils.Agent(env.observation_space, action_space_org, model_dir, argmax=args.argmax, use_memory=args.memory, use_text=args.text)
+
+#model_dir_a = utils.get_model_dir("v2-avg")
+#agent_a = utils.Agent(env.observation_space, action_space_org, model_dir, argmax=args.argmax, use_memory=args.memory, use_text=args.text)
 
 # Run the agent
 
@@ -68,15 +74,26 @@ for episode in range(args.episodes):
         if args.gif:
             frames.append(numpy.moveaxis(env.render("rgb_array"), 2, 0))
 
-        # action = agent.get_action(obs)
-        action = [numpy.random.randint(0, env.action_space.n) for _ in range(len(env.agents))]
+        #action_l = agent_l.get_action(obs[0])
+        #action_a = agent_a.get_action(obs[1])
+        action_l = agent_l.get_action(obs)
+
+        #action = [numpy.random.randint(0, env.action_space.n) for _ in range(len(env.agents))]
+        #action = [action_l, action_a]
+        action = action_l
+
+
         obs, reward, done, _ = env.step(action)
+
+        print(reward) if reward > 0 else None
         # agent.analyze_feedback(reward, done)
+
+        time.sleep(0.1)
 
         if done or env.window.closed:
             break
 
-    #env.render_blank_image()
+
 
     if env.window.closed:
         break
