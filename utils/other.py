@@ -36,23 +36,13 @@ def get_values(env, agent, goal_pos, box_strength):
 
     reset_config = configuration_tuple
 
-    #if env.grid.get(*goal_pos) is not None and not env.grid.get(*goal_pos).can_overlap():
-    #    return None
-
     for agent_x in range(env.width):
         for agent_y in range(env.height):
 
-            # TODO remove this hack
-            # if agent_x == goal_pos[0]:
-            #     continue
-
-            #if env.grid.get(x, y) is not None and not env.grid.get(x, y).can_overlap():
-            #    continue
-
             for agent_dir in range(n_directions):
 
-                reset_config.agent_pos = (agent_x, agent_y)
-                reset_config.agent_dir = agent_dir
+                reset_config.agent_pos = [(agent_x, agent_y)]
+                reset_config.agent_dir = [agent_dir]
                 reset_config.box_strength = box_strength
                 reset_config.goal_pos = goal_pos
 
@@ -63,7 +53,7 @@ def get_values(env, agent, goal_pos, box_strength):
 
                 env.render('human')
 
-                obs = env.gen_obs()
+                obs = env.make_observation()
                 values[agent_y, agent_x, agent_dir] = agent.get_value(obs)
 
     return values

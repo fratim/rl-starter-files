@@ -47,7 +47,7 @@ print(f"Device: {device}\n")
 
 # Load environment
 
-env = utils.make_env(args.env, args.seed)
+env = utils.make_env(args.env, seed=args.seed)
 for _ in range(args.shift):
     env.reset()
 print("Environment loaded\n")
@@ -73,8 +73,7 @@ for goal_x in range(env.width):
     for goal_y in range(env.height):
         pb_goals.append((goal_x, goal_y))
 
-max_box_strength = 4
-
+max_box_strength = env.max_box_strength
 mean_values = np.ones((env.height, env.width, max_box_strength+1))*np.nan
 
 for box_strength in range(max_box_strength+1):
