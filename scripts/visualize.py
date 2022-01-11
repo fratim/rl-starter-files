@@ -77,6 +77,9 @@ for episode in range(args.episodes):
 
         action = agent.get_action(obs)
         obs, reward, done, _ = env.step(action)
+
+        #print(env.special_rewards[env.agents[0].pos[1], env.agents[0].pos[0], env.box_obj.strength] ** 2)
+
         agent.analyze_feedback(reward, done)
 
         if done or env.window.closed:

@@ -1,7 +1,6 @@
 import argparse
 import numpy
-import copy
-import numpy as np
+from utils import get_avg_action
 
 import utils
 from utils import device
@@ -69,33 +68,6 @@ if args.gif:
 # Create a window to view the environment
 env.render('human')
 
-
-def most_frequent(List):
-    return max(set(List), key=List.count)
-
-
-def get_avg_action(agent, obs, goal_pos):
-
-    empty_cell = np.zeros((6,), dtype=np.uint8)
-    goal_cell = obs[tuple(goal_pos)]
-
-    base_observation = copy.deepcopy(obs)
-    base_observation[tuple(goal_pos)] = empty_cell
-
-    actions = []
-
-    for row in range(obs.shape[0]):
-        for col in range(obs.shape[1]):
-
-            manipulated_obs = copy.deepcopy(base_observation)
-            if not np.array_equal(manipulated_obs[row, col], empty_cell):
-                continue
-
-            manipulated_obs[row, col] = goal_cell
-
-            actions.append(agent.get_action(manipulated_obs))
-
-    return most_frequent(actions)
 
 
 for episode in range(args.episodes):
